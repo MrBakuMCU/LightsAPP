@@ -23,6 +23,9 @@ def getTemps():
         psi1 = bmedata[2]
     return jsonify(temp=temp1, hum=hum1, psi=psi1)
 
+@app.route("/chart")
+def chart():
+    return render_template('chart.html', title="Chart")
 
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/")
