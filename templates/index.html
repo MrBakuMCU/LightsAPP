@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="jumbotron text-center">
+  <h1>BME280 Sensors</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class='shadow p-3 mb-5 bg-white rounded'><span id="sysTemp" style="font-size: 30px;font-weight: bold;">{{ sysTemp }}</span>
+  </div>
+    </div>
+    <div class="col-sm-4">
+     <div class='shadow p-3 mb-5 bg-white rounded'><span id="sysHum" style="font-size: 30px;font-weight: bold;">{{ sysHum }}</span>
+  </div>
+    </div>
+    <div class="col-sm-4">
+      <div class='shadow p-3 mb-5 bg-white rounded'><span id="sysPSI" style="font-size: 30px;font-weight: bold;">{{ sysPSI }}</span>
+  </div>
+    </div>
+  </div>
+</div>
+</div>
+
+    <script src="static/bme_ajax.js"></script>
+
+{% endblock %}
