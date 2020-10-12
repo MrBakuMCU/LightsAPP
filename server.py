@@ -1,10 +1,10 @@
 import configparser
 from datetime import datetime
 from string import Template
-
-from flask import Flask, render_template, jsonify, request, redirect, flash
+import json
+from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
-
+from time import time
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
@@ -32,8 +32,8 @@ def chart():
     return render_template('chart.html', title="Chart")
 
 
-@app.route("/index", methods=['GET', 'POST'])
-@app.route("/")
+@app.route("/index")
+@app.route("/", methods=['GET', 'POST'])
 def index():
     return render_template('index.html', title="Main page")
 
@@ -51,7 +51,7 @@ def strfdelta(tdelta, fmt):
 
 
 def lights_update_status():
-    # delta_d = strfdelta(t1_diff, "%D")
+    delta_d = strfdelta(t1_diff, "%D")
     delta_hr = strfdelta(t1_diff, "%H")
     delta_min = strfdelta(t1_diff, "%M")
     delta_sec = strfdelta(t1_diff, "%S")
@@ -59,10 +59,35 @@ def lights_update_status():
     if int(delta_hr) > 0:
         flash("Last update was - " + delta_hr + " hr. " + delta_min + " min. " + delta_sec + " sec. ago!",
               "warning")
+    elif int(delta_d) > 0:
+        flash("Last update was - " + delta_d + " d. " + delta_hr + " hr. " + delta_min + " min. " + delta_sec + "sec. "
+                                                                                                                "ago!",
+              "warning")
     else:
         flash("Last update was - " + delta_min + " min. " + delta_sec + " sec. ago!",
               "warning")
 
+
+@app.route('/chart', methods=["GET", "POST"])
+def main():
+    return render_template('chart.html')
+
+
+@app.route('/_datachart', methods=["GET", "POST"])
+def datachart():
+    global temp_chart, hum_chart, psi_chart
+    if request.method == "GET":
+        bmedata_chart = getBMEData1()
+        temp_chart = bmedata_chart[0]
+        hum_chart = bmedata_chart[1]
+        psi_chart = bmedata_chart[2]
+    # return jsonify(tempchart=temp_chart, humchart=hum_chart, psichart=psi_chart)
+
+    data_chart = [time() * 1000, temp_chart, hum_chart, psi_chart]
+    response = make_response(json.dumps(data_chart))
+    response.content_type = 'application/json'
+
+    return response
 
 
 @app.route("/lights", methods=['GET', 'POST'])
