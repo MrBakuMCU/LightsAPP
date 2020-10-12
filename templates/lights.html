@@ -2,21 +2,9 @@
 
 {% block content %}
 <script type="text/javascript">$(document).ready(function(){
-    $("#successMessage").delay(5000).fadeOut(1000);
-    $("#warningMSG").fadeIn(2000);
-
-});
+    $("#successMessage").delay(3000).fadeOut(1000);});
 </script>
-
-<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
-<script language="javascript" type="text/javascript">
-
-var timeout = setInterval(reloadChat, 2000);
-function reloadChat () {
-
-     $('#warningMSG').load('/lights_update');
-}
-</script>
+    <script src="static/lights_update.js"></script>
 <div class="col-sm-4" id="warningMSG">
         {% with errors = get_flashed_messages(category_filter=["warning"]) %}
             {% if errors %}
@@ -37,10 +25,10 @@ function reloadChat () {
     <form method="POST" action="/lights">
       <div class="form-field">{{ form.t1_start.label }}<br>{{ form.t1_start(size=32, value=koo) }}</div>
       <div class="form-field">{{ form.t1_stop.label }}<br>{{ form.t1_stop(size=32, value=poo) }}</div>
-     <div>
+        <div>
         <input id="submit" name="submit" type="submit" value="Submit">
     </div>
-  </form>
+    </form>
 </div>
 <div class="row">
 
@@ -49,7 +37,7 @@ function reloadChat () {
             {% if errors %}
                 {%- for message in errors %}
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span>{{ message }}</span>
+                        <span>{{ message | safe }}</span>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

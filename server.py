@@ -50,19 +50,19 @@ def strfdelta(tdelta, fmt):
     return t.substitute(**d)
 
 
-@app.route("/lights_update", methods=['GET', 'POST'])
-def delta_flash_msg():
+def lights_update_status():
     # delta_d = strfdelta(t1_diff, "%D")
     delta_hr = strfdelta(t1_diff, "%H")
     delta_min = strfdelta(t1_diff, "%M")
     delta_sec = strfdelta(t1_diff, "%S")
 
     if int(delta_hr) > 0:
-        flash("Time was updated " + delta_hr + " hours, " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+        flash("Last update was - " + delta_hr + " hr. " + delta_min + " min. " + delta_sec + " sec. ago!",
               "warning")
     else:
-        flash("Time was updated " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+        flash("Last update was - " + delta_min + " min. " + delta_sec + " sec. ago!",
               "warning")
+
 
 
 @app.route("/lights", methods=['GET', 'POST'])
@@ -83,17 +83,14 @@ def addtime():
     t1_updated_on = datetime.strptime(t1_updated_on_raw, "%Y-%m-%d %H:%M:%S")
     t1_current = datetime.strptime(t1_current_time_raw, "%Y-%m-%d %H:%M:%S")
     t1_diff = t1_current - t1_updated_on
-
+    lights_update_status()
     if form.validate_on_submit():
         lights_parse()
-        delta_flash_msg()
-        # print("Updated from file:", t1_updated_on)
-        # print("Current time:", t1_current)
         flash("Time updated successfully!", "success")
         return redirect(request.url)
 
     return render_template('lights.html', title='Changing Light Schedule', form=form,
-                           koo=t1_start_now, poo=t1_stop_now, diff=t1_diff)
+                           koo=t1_start_now, poo=t1_stop_now)
 
 
 @app.errorhandler(CSRFError)
