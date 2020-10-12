@@ -33,5 +33,5 @@ def lights_parse():
     print("START:", {tstart1})
     print('STOP:', {tstop1})
 
-    with open('applicat/configs/time_config.ini', 'w') as configfile:
+    with open('static/configs/time_config.ini', 'w') as configfile:
         tconfig.write(configfile)

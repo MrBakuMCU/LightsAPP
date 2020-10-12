@@ -1,30 +1,20 @@
 ﻿import sqlite3
 
-connectionObject = sqlite3.connect("weather.db")
+connectionObject = sqlite3.connect("lights.db")
 
 cursorObject = connectionObject.cursor()
 
 # Create a table in the disk file based database
 
-createTable = "CREATE TABLE temperature(id int, temp numeric(3,1))"
-
+createTable = "CREATE TABLE lights_change(id int, time_start numeric(3,1), time_stop numeric(3,1), current_timestamp )"
 cursorObject.execute(createTable)
 
-# Insert EOD stats into the reports table
+# insertValues = "INSERT INTO temperature values(1,40.1)"
+#cursorObject.execute(insertValues)
 
-insertValues = "INSERT INTO temperature values(1,40.1)"
-
-cursorObject.execute(insertValues)
-
-insertValues = "INSERT INTO temperature values(2,65.4)"
-
-cursorObject.execute(insertValues)
-
-queryTable = "SELECT * from temperature"
-
+queryTable = "SELECT * from lights_change"
 queryResults = cursorObject.execute(queryTable)
-
-print("(CityId, Temperature)")
+print("()")
 
 for result in queryResults:
     print(result)
