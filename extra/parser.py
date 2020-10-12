@@ -27,5 +27,5 @@ print("START:", {t2_start})
 print("STOP:", {t2_stop})
 print("UPDATED:", {t2_updated})
 
-with open('../applicat/configs/time_config.ini', 'w') as configfile:
+with open('../static/configs/time_config.ini', 'w') as configfile:
     config.write(configfile)

@@ -1,9 +1,10 @@
+import configparser
+
 from flask import Flask, render_template, jsonify, request, redirect, flash
 from flask_wtf.csrf import CSRFProtect, CSRFError
+
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
-import configparser
-from datetime import datetime
 
 app = Flask(__name__)
 CSRFProtect(app)
@@ -23,9 +24,11 @@ def getTemps():
         psi1 = bmedata[2]
     return jsonify(temp=temp1, hum=hum1, psi=psi1)
 
+
 @app.route("/chart")
 def chart():
     return render_template('chart.html', title="Chart")
+
 
 @app.route("/index", methods=['GET', 'POST'])
 @app.route("/")
@@ -37,7 +40,7 @@ def index():
 def addtime():
     form = LightsTimeForm()
     config = configparser.ConfigParser()
-    config.read('applicat/configs/time_config.ini')
+    config.read('static/configs/time_config.ini')
 
     t1_start_now = config['LIGHTTIME_01']['START01']
     t1_stop_now = config['LIGHTTIME_01']['STOP01']
