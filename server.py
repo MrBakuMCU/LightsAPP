@@ -1,8 +1,10 @@
 import configparser
-import os
+from datetime import datetime
+from string import Template
+
 from flask import Flask, render_template, jsonify, request, redirect, flash
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from datetime import datetime
+
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
@@ -36,8 +38,25 @@ def index():
     return render_template('index.html', title="Main page")
 
 
+class DeltaTemplate(Template):
+    delimiter = "%"
+
+
+def strfdelta(tdelta, fmt):
+    d = {"D": tdelta.days}
+    d["H"], rem = divmod(tdelta.seconds, 3600)
+    d["M"], d["S"] = divmod(rem, 60)
+    t = DeltaTemplate(fmt)
+    return t.substitute(**d)
+
+
+def delta_flash_msg():
+    pass
+
+
 @app.route("/lights", methods=['GET', 'POST'])
 def addtime():
+    global t1_diff
 
     form = LightsTimeForm()
 
@@ -52,19 +71,30 @@ def addtime():
 
     t1_updated_on = datetime.strptime(t1_updated_on_raw, "%Y-%m-%d %H:%M:%S")
     t1_current = datetime.strptime(t1_current_time_raw, "%Y-%m-%d %H:%M:%S")
-    t1_diff=t1_current-t1_updated_on
+    t1_diff = t1_current - t1_updated_on
+
+    delta_d = strfdelta(t1_diff, "%D")
+    delta_hr = strfdelta(t1_diff, "%H")
+    delta_min = strfdelta(t1_diff, "%M")
+    delta_sec = strfdelta(t1_diff, "%S")
+
+    if 24 > int(delta_hr) > 0:
+        flash("Time was updated " + delta_hr + " hours, " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+              "warning")
+    else:
+        flash("Time was updated " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+              "warning")
+
     if form.validate_on_submit():
-
         lights_parse()
-
-        print("Updated from file:", t1_updated_on)
-        print("Current time:",t1_current)
-        print(t1_diff)
+        delta_flash_msg()
+        # print("Updated from file:", t1_updated_on)
+        # print("Current time:", t1_current)
         flash("Time updated successfully!", "success")
         return redirect(request.url)
 
     return render_template('lights.html', title='Changing Light Schedule', form=form,
-                           koo=t1_start_now, poo=t1_stop_now)
+                           koo=t1_start_now, poo=t1_stop_now, diff=t1_diff)
 
 
 @app.errorhandler(CSRFError)

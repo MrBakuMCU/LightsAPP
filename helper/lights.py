@@ -28,15 +28,13 @@ def lights_parse():
     time_data = {'LIGHTTIME_01': dict(START01=t1_start, STOP01=t1_stop, UPDATEDON=t1_updatedon)}
     tconfig.read_dict(time_data)
 
-    tstart1 = tconfig['LIGHTTIME_01']['START01']
-    tstop1 = tconfig['LIGHTTIME_01']['STOP01']
-    timestamp1 = tconfig['LIGHTTIME_01']['UPDATEDON']
-
+    # tstart1 = tconfig['LIGHTTIME_01']['START01']
+    # tstop1 = tconfig['LIGHTTIME_01']['STOP01']
+    # timestamp1 = tconfig['LIGHTTIME_01']['UPDATEDON']
     # This just prints the time to the terminal for us to see that everything was recorded correctly (not necessary)
-
-    print("START:", {tstart1})
-    print('STOP:', {tstop1})
-    print('UPDATED:', {timestamp1})
+    # print("START:", {tstart1})
+    # print('STOP:', {tstop1})
+    # print('UPDATED:', {timestamp1})
 
     with open('static/configs/time_config.ini', 'w') as configfile:
         tconfig.write(configfile)
