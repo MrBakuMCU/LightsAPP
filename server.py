@@ -50,8 +50,19 @@ def strfdelta(tdelta, fmt):
     return t.substitute(**d)
 
 
+@app.route("/lights_update", methods=['GET', 'POST'])
 def delta_flash_msg():
-    pass
+    # delta_d = strfdelta(t1_diff, "%D")
+    delta_hr = strfdelta(t1_diff, "%H")
+    delta_min = strfdelta(t1_diff, "%M")
+    delta_sec = strfdelta(t1_diff, "%S")
+
+    if int(delta_hr) > 0:
+        flash("Time was updated " + delta_hr + " hours, " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+              "warning")
+    else:
+        flash("Time was updated " + delta_min + " minutes, " + delta_sec + " seconds ago!",
+              "warning")
 
 
 @app.route("/lights", methods=['GET', 'POST'])
@@ -72,18 +83,6 @@ def addtime():
     t1_updated_on = datetime.strptime(t1_updated_on_raw, "%Y-%m-%d %H:%M:%S")
     t1_current = datetime.strptime(t1_current_time_raw, "%Y-%m-%d %H:%M:%S")
     t1_diff = t1_current - t1_updated_on
-
-    delta_d = strfdelta(t1_diff, "%D")
-    delta_hr = strfdelta(t1_diff, "%H")
-    delta_min = strfdelta(t1_diff, "%M")
-    delta_sec = strfdelta(t1_diff, "%S")
-
-    if 24 > int(delta_hr) > 0:
-        flash("Time was updated " + delta_hr + " hours, " + delta_min + " minutes, " + delta_sec + " seconds ago!",
-              "warning")
-    else:
-        flash("Time was updated " + delta_min + " minutes, " + delta_sec + " seconds ago!",
-              "warning")
 
     if form.validate_on_submit():
         lights_parse()
