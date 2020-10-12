@@ -6,7 +6,7 @@ cursorObject = connectionObject.cursor()
 
 # Create a table in the disk file based database
 
-createTable = "CREATE TABLE lights_change(id int, time_start numeric(3,1), time_stop numeric(3,1), current_timestamp )"
+createTable = "CREATE TABLE lights_change(id int, time_start char(5), time_stop char(5)3,1), current_timestamp ()"
 cursorObject.execute(createTable)
 
 # insertValues = "INSERT INTO temperature values(1,40.1)"

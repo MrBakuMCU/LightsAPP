@@ -1,8 +1,8 @@
 import configparser
-
+import os
 from flask import Flask, render_template, jsonify, request, redirect, flash
 from flask_wtf.csrf import CSRFProtect, CSRFError
-
+from datetime import datetime
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
@@ -38,20 +38,33 @@ def index():
 
 @app.route("/lights", methods=['GET', 'POST'])
 def addtime():
+
     form = LightsTimeForm()
+
     config = configparser.ConfigParser()
     config.read('static/configs/time_config.ini')
 
+    t1_current_time_raw = str(datetime.now())[:-7]
+
     t1_start_now = config['LIGHTTIME_01']['START01']
     t1_stop_now = config['LIGHTTIME_01']['STOP01']
+    t1_updated_on_raw = config['LIGHTTIME_01']['UPDATEDON']
 
+    t1_updated_on = datetime.strptime(t1_updated_on_raw, "%Y-%m-%d %H:%M:%S")
+    t1_current = datetime.strptime(t1_current_time_raw, "%Y-%m-%d %H:%M:%S")
+    t1_diff=t1_current-t1_updated_on
     if form.validate_on_submit():
+
         lights_parse()
 
-        print(form.t1_start.data)
+        print("Updated from file:", t1_updated_on)
+        print("Current time:",t1_current)
+        print(t1_diff)
         flash("Time updated successfully!", "success")
         return redirect(request.url)
-    return render_template('lights.html', title='Changing Light Schedule', form=form, koo=t1_start_now, poo=t1_stop_now)
+
+    return render_template('lights.html', title='Changing Light Schedule', form=form,
+                           koo=t1_start_now, poo=t1_stop_now)
 
 
 @app.errorhandler(CSRFError)
