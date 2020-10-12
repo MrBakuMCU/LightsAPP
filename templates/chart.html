@@ -30,10 +30,10 @@
     <br>
 
 
-    <div class="container-fluid">
+    <div class="container">
         <!-- Example row of columns -->
         <div class="row">
-            <div class="container-fluid" id="data-container">
+            <div class="container p-3 my-3 bg-dark text-white" id="data-container">
 
             </div>
         </div>
@@ -54,7 +54,7 @@
             var tm = requests.done(function (result)
             {
                 var series = chart.series[0],
-                    shift = series.data.length > 20;
+                    shift = series.data.length > 30;
 
                 // add the point
                 chart.series[0].addPoint(result, true, shift);
@@ -74,7 +74,7 @@
                     }
                 },
                 title: {
-                    text: 'Live random data'
+                    text: 'BME Temp Live Data'
                 },
                 xAxis: {
                     type: 'datetime',
@@ -85,12 +85,12 @@
                     minPadding: 0.2,
                     maxPadding: 0.2,
                     title: {
-                        text: 'Value',
+                        text: 'Temperature, C',
                         margin: 80
                     }
                 },
                 series: [{
-                    name: 'Random data',
+                    name: 'Temperature, C',
                     data: []
                 }]
             });

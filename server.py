@@ -4,7 +4,7 @@ from string import Template
 import json
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from time import time
+from time import time, gmtime
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
@@ -25,11 +25,6 @@ def getTemps():
         hum1 = bmedata[1]
         psi1 = bmedata[2]
     return jsonify(temp=temp1, hum=hum1, psi=psi1)
-
-
-@app.route("/chart")
-def chart():
-    return render_template('chart.html', title="Chart")
 
 
 @app.route("/index")
