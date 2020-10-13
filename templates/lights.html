@@ -4,7 +4,6 @@
 <script type="text/javascript">$(document).ready(function(){
     $("#successMessage").delay(3000).fadeOut(1000);});
 </script>
-    <script src="static/lights_update.js"></script>
 <div class="col-sm-4" id="warningMSG">
         {% with errors = get_flashed_messages(category_filter=["warning"]) %}
             {% if errors %}

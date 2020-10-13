@@ -4,14 +4,14 @@ from string import Template
 import json
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from time import time, gmtime
+from time import time
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
 app = Flask(__name__)
 CSRFProtect(app)
 app.config.update(
-    DEBUG=True,
+    DEBUG=False,
     WTF_CSRF_ENABLED=False,
     SECRET_KEY='you-will-never-guess', )
 
@@ -61,28 +61,6 @@ def lights_update_status():
     else:
         flash("Last update was - " + delta_min + " min. " + delta_sec + " sec. ago!",
               "warning")
-
-
-@app.route('/chart', methods=["GET", "POST"])
-def main():
-    return render_template('chart.html')
-
-
-@app.route('/_datachart', methods=["GET", "POST"])
-def datachart():
-    global temp_chart, hum_chart, psi_chart
-    if request.method == "GET":
-        bmedata_chart = getBMEData1()
-        temp_chart = bmedata_chart[0]
-        hum_chart = bmedata_chart[1]
-        psi_chart = bmedata_chart[2]
-    # return jsonify(tempchart=temp_chart, humchart=hum_chart, psichart=psi_chart)
-
-    data_chart = [time() * 1000, temp_chart, hum_chart, psi_chart]
-    response = make_response(json.dumps(data_chart))
-    response.content_type = 'application/json'
-
-    return response
 
 
 @app.route("/lights", methods=['GET', 'POST'])

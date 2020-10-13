@@ -15,6 +15,7 @@
     <orderEntry type="library" name="highcharts-more" level="application" />
     <orderEntry type="library" name="exporting" level="application" />
     <orderEntry type="library" name="eon" level="application" />
+    <orderEntry type="library" name="chartist" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
