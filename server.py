@@ -5,6 +5,7 @@ import json
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from time import time
+from helper.ads import ads_sensor_01
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 
@@ -14,6 +15,19 @@ app.config.update(
     DEBUG=False,
     WTF_CSRF_ENABLED=False,
     SECRET_KEY='you-will-never-guess', )
+
+
+def _map(x, in_min, in_max, out_min, out_max):
+    return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
+
+
+@app.route("/moisture", methods=['POST', 'GET'])
+def moisture01():
+    a = ads_sensor_01()
+    print(a)
+    _map(a, 0, 100, 1600, 2900)
+    print(a)
+    return render_template('moisture.html')  # moisture_01=moisture_01)
 
 
 @app.route("/myBME", methods=['POST', 'GET'])
