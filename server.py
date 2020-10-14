@@ -17,17 +17,17 @@ app.config.update(
     SECRET_KEY='you-will-never-guess', )
 
 
-def _map(x, in_min, in_max, out_min, out_max):
+def mapper(x, in_min, in_max, out_min, out_max):
     return int((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
 
 
-@app.route("/moisture", methods=['POST', 'GET'])
+@app.route("/moist", methods=['POST', 'GET'])
 def moisture01():
     a = ads_sensor_01()
-    print(a)
-    _map(a, 0, 100, 1600, 2900)
-    print(a)
-    return render_template('moisture.html')  # moisture_01=moisture_01)
+    val_moist = mapper(a, 1200, 2950, 100, 0)
+    val_moist_str = str(val_moist)
+    val_moist_str = str(val_moist_str+"%")
+    return jsonify(moist=val_moist_str)
 
 
 @app.route("/myBME", methods=['POST', 'GET'])
@@ -39,6 +39,11 @@ def getTemps():
         hum1 = bmedata[1]
         psi1 = bmedata[2]
     return jsonify(temp=temp1, hum=hum1, psi=psi1)
+
+
+@app.route("/moisture", methods=['GET', 'POST'])
+def moisture():
+    return render_template('moist.html', title="Moisture")
 
 
 @app.route("/index")
