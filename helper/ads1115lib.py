@@ -1,4 +1,5 @@
-﻿import time
+﻿#!/usr/bin/python3.5
+import time
 import smbus2
 
 __all__ = ['ADS1115']

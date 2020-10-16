@@ -1,4 +1,5 @@
-﻿from helper.ads1115lib import ADS1115
+﻿#!/usr/bin/python3.5
+from helper.ads1115lib import ADS1115
 import time
 
 ads = ADS1115(address=0x48)

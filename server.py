@@ -1,10 +1,10 @@
+#!/usr/bin/python3.5
 import configparser
+import time
 from datetime import datetime
 from string import Template
-import json
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from time import time
 from helper.ads import ads_sensor_01
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
@@ -26,8 +26,16 @@ def moisture01():
     a = ads_sensor_01()
     val_moist = mapper(a, 1200, 2950, 100, 0)
     val_moist_str = str(val_moist)
-    val_moist_str = str(val_moist_str+"%")
+    val_moist_str = str(val_moist_str + "%")
     return jsonify(moist=val_moist_str)
+
+
+@app.cli.command()
+def random_scheduled():
+    """Run scheduled job."""
+    print(str(datetime.utcnow()), 'Just a random job...')
+    time.sleep(5)
+    print(str(datetime.utcnow()), 'Done!')
 
 
 @app.route("/myBME", methods=['POST', 'GET'])
