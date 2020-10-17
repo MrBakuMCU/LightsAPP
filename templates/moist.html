@@ -1,22 +1,23 @@
 ﻿{% extends "base.html" %}
 
 {% block content %}
-<div class="jumbotron text-center">
-  <h1>Moisture</h1>
-<div class="container">
-  <div class="row">
-    <div class="col-sm-4">
+    <div class="jumbotron text-center">
+        <h1>Moisture</h1>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4">
 
-    </div>
-    <div class="col-sm-4">
-     <div class='shadow p-3 mb-5 bg-white rounded'><span id="Moist" style="font-size: 30px;font-weight: bold;">{{ moist }}</span>
-  </div>
-    </div>
-    <div class="col-sm-4">
+                </div>
+                <div class="col-sm-4">
+                    <div class='shadow p-3 mb-5 bg-white rounded'><span id="Moist"
+                                                                        style="font-size: 30px;font-weight: bold;">{{ moist }}</span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
 
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
-</div>
- <script src="static/moist_ajax.js"></script>
+    <script src="static/moist_ajax.js"></script>
 {% endblock %}

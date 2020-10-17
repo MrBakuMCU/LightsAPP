@@ -1,22 +1,22 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
-      {% if title %}
-      <title>{{ title }}</title>
-      {% else %}
-      <title>Welcome to Server</title>
-      {% endif %}
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    </head>
+<head>
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>Welcome to Server</title>
+    {% endif %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
 
-    <body>
-        <div>BME Temp Server: <a href="/index">Home </a> |<a href="/lights"> Lights</a> |<a href="/moisture"> Moisture</a></div>
-        <hr>
-        {% block content %}{% endblock %}
-    </body>
+<body>
+<div>BME Temp Server: <a href="/index">Home </a> |<a href="/lights"> Lights</a> |<a href="/moisture"> Moisture</a></div>
+<hr>
+{% block content %}{% endblock %}
+</body>
 </html>

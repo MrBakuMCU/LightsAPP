@@ -8,6 +8,7 @@ from flask_wtf.csrf import CSRFProtect, CSRFError
 from helper.ads import ads_sensor_01
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
+import sqlite3 as sql
 
 app = Flask(__name__)
 CSRFProtect(app)
@@ -31,7 +32,26 @@ def moisture01():
 
 
 @app.cli.command()
-def random_scheduled():
+def addtodb():
+    """Add Inside temp to "temp.db"."""
+    global temp_inside, hum_inside, psi_inside
+    bmedata = getBMEData1()
+    temp_inside = bmedata[0]
+    hum_inside = bmedata[1]
+    psi_inside = bmedata[2]
+    with sql.connect("databases/temp.db") as con:
+        cur = con.cursor()
+        cur.execute("INSERT INTO temp_inside_db (temp_in,hum_in,psi_in) VALUES(?, ?, ?)",(temp_inside,hum_inside,psi_inside) )
+        con.commit()
+        print("Record successfully added:")
+        query_Table = "SELECT * FROM temp_inside_db ORDER BY rowid DESC LIMIT 1;"
+        queryResults = cur.execute(query_Table)
+
+    for result in queryResults:
+        print(result)
+
+@app.cli.command()
+def random():
     """Run scheduled job."""
     print(str(datetime.utcnow()), 'Just a random job...')
     time.sleep(5)

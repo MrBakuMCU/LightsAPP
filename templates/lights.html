@@ -1,10 +1,11 @@
 ﻿{% extends "base.html" %}
 
 {% block content %}
-<script type="text/javascript">$(document).ready(function(){
-    $("#successMessage").delay(3000).fadeOut(1000);});
-</script>
-<div class="col-sm-4" id="warningMSG">
+    <script type="text/javascript">$(document).ready(function () {
+        $("#successMessage").delay(3000).fadeOut(1000);
+    });
+    </script>
+    <div class="col-sm-4" id="warningMSG">
         {% with errors = get_flashed_messages(category_filter=["warning"]) %}
             {% if errors %}
                 {%- for message in errors %}
@@ -18,53 +19,52 @@
             {% endif %}
         {% endwith %}
     </div>
-<div class="formwrapper">
-  <h2 class="title">Time Schedule for Lights. Previous </h2>
+    <div class="formwrapper">
+        <h2 class="title">Time Schedule for Lights. Previous </h2>
 
-    <form method="POST" action="/lights">
-      <div class="form-field">{{ form.t1_start.label }}<br>{{ form.t1_start(size=32, value=koo) }}</div>
-      <div class="form-field">{{ form.t1_stop.label }}<br>{{ form.t1_stop(size=32, value=poo) }}</div>
-        <div>
-        <input id="submit" name="submit" type="submit" value="Submit">
+        <form method="POST" action="/lights">
+            <div class="form-field">{{ form.t1_start.label }}<br>{{ form.t1_start(size=32, value=koo) }}</div>
+            <div class="form-field">{{ form.t1_stop.label }}<br>{{ form.t1_stop(size=32, value=poo) }}</div>
+            <div>
+                <input id="submit" name="submit" type="submit" value="Submit">
+            </div>
+        </form>
     </div>
-    </form>
-</div>
-<div class="row">
+    <div class="row">
 
-    <div class="col-sm-4" id="successMessage">
-        {% with errors = get_flashed_messages(category_filter=["success"]) %}
-            {% if errors %}
-                {%- for message in errors %}
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <span>{{ message | safe }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor -%}
-            {% endif %}
-        {% endwith %}
+        <div class="col-sm-4" id="successMessage">
+            {% with errors = get_flashed_messages(category_filter=["success"]) %}
+                {% if errors %}
+                    {%- for message in errors %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <span>{{ message | safe }}</span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor -%}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+
+        <div class="col-sm-4">
+            {% with errors = get_flashed_messages(category_filter=["danger"]) %}
+                {% if errors %}
+                    {%- for message in errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor -%}
+                {% endif %}
+            {% endwith %}
+        </div>
+
     </div>
-
-
-
-    <div class="col-sm-4">
-        {% with errors = get_flashed_messages(category_filter=["danger"]) %}
-            {% if errors %}
-                {%- for message in errors %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <span>{{ message }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor -%}
-            {% endif %}
-        {% endwith %}
-    </div>
-
-</div>
-  <form method="POST">
-    {{ form.csrf_token }}
+    <form method="POST">
+        {{ form.csrf_token }}
     </form>
 {% endblock %}
