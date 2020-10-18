@@ -1,7 +1,7 @@
 #!/usr/bin/python3.5
 import configparser
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from string import Template
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -9,6 +9,7 @@ from helper.ads import ads_sensor_01
 from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 import sqlite3 as sql
+import RPi.GPIO as GPIO
 
 app = Flask(__name__)
 CSRFProtect(app)
@@ -41,7 +42,8 @@ def addtodb():
     psi_inside = bmedata[2]
     with sql.connect("databases/temp.db") as con:
         cur = con.cursor()
-        cur.execute("INSERT INTO temp_inside_db (temp_in,hum_in,psi_in) VALUES(?, ?, ?)",(temp_inside,hum_inside,psi_inside) )
+        cur.execute("INSERT INTO temp_inside_db (temp_in,hum_in,psi_in) VALUES(?, ?, ?)",
+                    (temp_inside, hum_inside, psi_inside))
         con.commit()
         print("Record successfully added:")
         query_Table = "SELECT * FROM temp_inside_db ORDER BY rowid DESC LIMIT 1;"
@@ -49,13 +51,6 @@ def addtodb():
 
     for result in queryResults:
         print(result)
-
-@app.cli.command()
-def random():
-    """Run scheduled job."""
-    print(str(datetime.utcnow()), 'Just a random job...')
-    time.sleep(5)
-    print(str(datetime.utcnow()), 'Done!')
 
 
 @app.route("/myBME", methods=['POST', 'GET'])
@@ -136,6 +131,39 @@ def addtime():
 
     return render_template('lights.html', title='Changing Light Schedule', form=form,
                            koo=t1_start_now, poo=t1_stop_now)
+
+
+@app.cli.command()
+def check_time():
+    """Check time and turn on GPIO 18"""
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    GPIO.setup(18, GPIO.OUT)
+
+    config = configparser.ConfigParser()
+    config.read('static/configs/time_config.ini')
+    now = datetime.now()
+    time_now = now.strftime('%H:%M')
+
+    [t_now_hr, t_now_min] = [int(time_now_minutes) for time_now_minutes in time_now.split(':')]
+    time_now_minutes = timedelta(hours=t_now_hr, minutes=t_now_min)
+
+    t1_start_now = config['LIGHTTIME_01']['START01'][:-3]
+
+    [t1_start_hr, t1_start_min] = [int(t1_start_minutes) for t1_start_minutes in t1_start_now.split(':')]
+    t1_start_minutes = timedelta(hours=t1_start_hr, minutes=t1_start_min)
+
+    t1_stop_now = config['LIGHTTIME_01']['STOP01'][:-3]
+
+    [t1_stop_hr, t1_stop_min] = [int(t1_stop_minutes) for t1_stop_minutes in t1_stop_now.split(':')]
+    t1_stop_minutes = timedelta(hours=t1_stop_hr, minutes=t1_stop_min)
+
+    if t1_start_minutes <= time_now_minutes <= t1_stop_minutes:
+        GPIO.output(18, GPIO.HIGH)
+        print("Time is in the set range. Turn lights on!")
+    else:
+        GPIO.output(18, GPIO.LOW)
+        print("Current time is not in range!")
 
 
 @app.errorhandler(CSRFError)
