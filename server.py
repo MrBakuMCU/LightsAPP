@@ -158,12 +158,33 @@ def check_time():
     [t1_stop_hr, t1_stop_min] = [int(t1_stop_minutes) for t1_stop_minutes in t1_stop_now.split(':')]
     t1_stop_minutes = timedelta(hours=t1_stop_hr, minutes=t1_stop_min)
 
-    if t1_start_minutes <= time_now_minutes <= t1_stop_minutes:
-        GPIO.output(18, GPIO.HIGH)
-        print("Time is in the set range. Turn lights on!")
+    t1_start_minutes_str = str(t1_start_minutes)
+    time_now_minutes_str = str(time_now_minutes)
+    t1_stop_minutes_str = str(t1_stop_minutes)
+
+    if t1_start_minutes <= t1_stop_minutes:
+        if t1_start_minutes <= time_now_minutes <= t1_stop_minutes:
+            GPIO.output(18, GPIO.HIGH)
+            print(
+                "Time is in the set range. Turn lights on!: " + t1_start_minutes_str + "<=" + time_now_minutes_str +
+                "<="+t1_stop_minutes_str)
+        else:
+            GPIO.output(18, GPIO.LOW)
+            print(
+                "Current time is not in range!: " + t1_start_minutes_str + "<=" + time_now_minutes_str + "<=" +
+                t1_stop_minutes_str)
     else:
-        GPIO.output(18, GPIO.LOW)
-        print("Current time is not in range!")
+        if t1_stop_minutes <= t1_start_minutes:
+            if t1_stop_minutes <= time_now_minutes <= t1_start_minutes:
+                GPIO.output(18, GPIO.LOW)
+                print(
+                    "Pm to AM. Time is in the set range. Turn lights on!: " + t1_start_minutes_str + "<=" +
+                    time_now_minutes_str + "<=" + t1_stop_minutes_str)
+            else:
+                GPIO.output(18, GPIO.HIGH)
+                print(
+                    "PM to AM. Current time is not in range!: " + t1_start_minutes_str + "<=" + time_now_minutes_str +
+                    "<=" + t1_stop_minutes_str)
 
 
 @app.errorhandler(CSRFError)
