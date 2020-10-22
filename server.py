@@ -1,7 +1,7 @@
 #!/usr/bin/python3.5
 import configparser
-import time
-from datetime import datetime, timedelta
+import json
+from datetime import datetime, timedelta, timezone
 from string import Template
 from flask import Flask, render_template, jsonify, request, redirect, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
@@ -10,6 +10,8 @@ from helper.getbmedata import getBMEData1
 from helper.lights import LightsTimeForm, lights_parse
 import sqlite3 as sql
 import RPi.GPIO as GPIO
+from datetime import datetime
+
 
 app = Flask(__name__)
 CSRFProtect(app)
@@ -30,6 +32,26 @@ def moisture01():
     val_moist_str = str(val_moist)
     val_moist_str = str(val_moist_str + "%")
     return jsonify(moist=val_moist_str)
+
+
+@app.route('/chart')
+def hello_world():
+    return render_template('chart.html')
+
+
+@app.route('/live-data')
+def live_data():
+    bmedata = getBMEData1()
+    bmedata = bmedata[0]
+    old_time = datetime.now()
+    new_time = old_time - timedelta(hours=5)
+    data = (new_time.timestamp() * 1000, bmedata)
+
+    print(data)
+    response = make_response(json.dumps(data))
+    response.content_type = 'application/json'
+    print(response)
+    return response
 
 
 @app.cli.command()
@@ -167,7 +189,7 @@ def check_time():
             GPIO.output(18, GPIO.HIGH)
             print(
                 "Time is in the set range. Turn lights on!: " + t1_start_minutes_str + "<=" + time_now_minutes_str +
-                "<="+t1_stop_minutes_str)
+                "<=" + t1_stop_minutes_str)
         else:
             GPIO.output(18, GPIO.LOW)
             print(
